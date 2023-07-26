@@ -94,3 +94,41 @@ export const getNewPostService = () =>
       reject(error)
     }
   })
+
+export const getOnePost = (id) =>
+  new Promise(async (resolve, reject) => {
+    try {
+      const response = await db.Post.findOne({
+        where: { id: id },
+        include: [
+          { model: db.Image, as: 'images', attributes: ['image'] },
+          {
+            model: db.User,
+            as: 'user',
+            attributes: ['name', 'phone', 'zalo', 'fbUrl'],
+          },
+          {
+            model: db.Attribute,
+            as: 'attributes',
+            attributes: ['price', 'acreage', 'published', 'hashtag'],
+          },
+        ],
+        attributes: [
+          'id',
+          'title',
+          'star',
+          'address',
+          'description',
+          'priceNumber',
+          'areaNumber',
+        ],
+      })
+      resolve({
+        err: response ? 0 : 1,
+        msg: response ? 'OK' : 'Getting one post is failed.',
+        response,
+      })
+    } catch (error) {
+      reject(error)
+    }
+  })
