@@ -51,3 +51,39 @@ export const getOnePost = async (req, res) => {
     })
   }
 }
+
+export const createNewPost = async (req, res) => {
+  try {
+    const {
+      categoryCode,
+      title,
+      description,
+      priceNumber,
+      areaNumber,
+      label,
+      ...payload
+    } = req.body
+    const { id } = req.user
+    if (
+      !id ||
+      !categoryCode ||
+      !title ||
+      !description ||
+      !priceNumber ||
+      !areaNumber ||
+      !label
+    ) {
+      return res.status(400).json({
+        err: -1,
+        msg: 'Missing input',
+      })
+    }
+    const response = await services.createPost(req.body, id)
+    return res.status(200).json(response)
+  } catch (error) {
+    return res.status(500).json({
+      err: -1,
+      msg: 'Failed at one post controller: ' + error,
+    })
+  }
+}
